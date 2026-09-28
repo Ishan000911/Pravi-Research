@@ -1,0 +1,2 @@
+import { Router } from 'express'; import asyncHandler from '../utils/asyncHandler.js'; import { protect, authorize } from '../middleware/auth.js'; import * as c from '../controllers/userController.js';
+const router = Router(); router.use(protect); router.get('/', authorize('Admin', 'Asset Manager'), asyncHandler(c.list)); router.get('/:id', authorize('Admin'), asyncHandler(c.get)); router.patch('/:id', authorize('Admin'), asyncHandler(c.update)); router.delete('/:id', authorize('Admin'), asyncHandler(c.remove)); export default router;

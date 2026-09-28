@@ -1,0 +1,3 @@
+import { Router } from 'express'; import asyncHandler from '../utils/asyncHandler.js'; import { protect, authorize } from '../middleware/auth.js'; import { listResource, createResource, updateResource, deleteResource } from '../controllers/resourceController.js';
+export default function resourceRoutes(kind) { const router = Router(); router.use(protect); router.get('/', asyncHandler(listResource(kind))); router.post('/', authorize('Admin'), asyncHandler(createResource(kind))); router.patch('/:id', authorize('Admin'), asyncHandler(updateResource(kind))); router.delete('/:id', authorize('Admin'), asyncHandler(deleteResource(kind))); return router; }
+

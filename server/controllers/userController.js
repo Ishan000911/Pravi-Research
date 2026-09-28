@@ -1,0 +1,6 @@
+import User from '../models/User.js'; import Asset from '../models/Asset.js'; import AppError from '../utils/AppError.js';
+export async function list(_req, res) { res.json({ success: true, items: await User.find().sort('name') }); }
+export async function get(req, res) { const user = await User.findById(req.params.id); if (!user) throw new AppError('User not found', 404); res.json({ success: true, user }); }
+export async function update(req, res) { const allowed = ['name', 'email', 'role', 'department']; const data = Object.fromEntries(Object.entries(req.body).filter(([key]) => allowed.includes(key))); const user = await User.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true }); if (!user) throw new AppError('User not found', 404); res.json({ success: true, user }); }
+export async function remove(req, res) { if (String(req.user._id) === req.params.id) throw new AppError('You cannot delete your own account', 400); if (await Asset.exists({ assignedTo: req.params.id })) throw new AppError('Reassign assets before deleting this user', 409); const user = await User.findByIdAndDelete(req.params.id); if (!user) throw new AppError('User not found', 404); res.status(204).end(); }
+

@@ -1,0 +1,12 @@
+import { X, LoaderCircle, Inbox, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
+export const cx = (...x) => x.filter(Boolean).join(' ');
+export function StatusBadge({ value }) { return <span className={`badge badge-${String(value || '').toLowerCase().replaceAll(' ', '-')}`}>{value || '—'}</span>; }
+export function Spinner({ full = false }) { return <div className={full ? 'loading-full' : 'loading'}><LoaderCircle className="spin"/><span>Loading…</span></div>; }
+export function EmptyState({ title = 'Nothing here yet', text = 'No records match the current view.' }) { return <div className="empty"><Inbox/><strong>{title}</strong><p>{text}</p></div>; }
+export function Modal({ title, children, onClose, wide = false }) { return <div className="modal-backdrop" onMouseDown={e => e.target === e.currentTarget && onClose()}><div className={cx('modal', wide && 'modal-wide')}><div className="modal-head"><div><span className="eyebrow">Workspace action</span><h2>{title}</h2></div><button className="icon-btn" onClick={onClose}><X/></button></div><div className="modal-body">{children}</div></div></div>; }
+export function ConfirmModal({ title, text, onConfirm, onClose, busy }) { return <Modal title={title} onClose={onClose}><div className="confirm-icon"><AlertTriangle/></div><p>{text}</p><div className="form-actions"><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn danger" disabled={busy} onClick={onConfirm}>{busy ? 'Working…' : 'Confirm'}</button></div></Modal>; }
+export function Pagination({ meta, onPage }) { if (!meta || meta.pages <= 1) return null; return <div className="pagination"><span>Page {meta.page} of {meta.pages} · {meta.total} records</span><div><button className="icon-btn" disabled={meta.page <= 1} onClick={() => onPage(meta.page - 1)}><ChevronLeft/></button><button className="icon-btn" disabled={meta.page >= meta.pages} onClick={() => onPage(meta.page + 1)}><ChevronRight/></button></div></div>; }
+export function PageHeader({ eyebrow, title, description, action }) { return <header className="page-header"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{action}</header>; }
+export const Field = ({ label, children, className = '' }) => <label className={cx('field', className)}><span>{label}</span>{children}</label>;
+export const getError = e => e.response?.data?.message || e.message || 'Something went wrong';
+
